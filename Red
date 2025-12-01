@@ -1,101 +1,153 @@
--- 🧠 Brainrot VIP Teleporter
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-local TeleportService = game:GetService("TeleportService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "AutoJoin"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
 
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 400, 0, 380)
+frame.Position = UDim2.new(0.5, -200, 0.5, -190)
+frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+frame.BorderSizePixel = 0
+frame.Parent = gui
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
 
-local TARGET_PLACE_ID = "109983668079237"
-
--- ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "VipTeleporter"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = playerGui
-
--- MainFrame Minimalista
-local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 380, 0, 420)
-mainFrame.Position = UDim2.new(0.5, -190, 0.5, -210)
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-mainFrame.BorderSizePixel = 0
-mainFrame.Visible = false
-mainFrame.Parent = screenGui
-
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 12)
-corner.Parent = mainFrame
-
-local stroke = Instance.new("UIStroke")
-stroke.Color = Color3.fromRGB(50, 50, 50)
-stroke.Thickness = 1
-stroke.Parent = mainFrame
-
--- Título Minimalista
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 50)
-title.Position = UDim2.new(0, 0, 0, 20)
+-- Título
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1,0,0,50)
 title.BackgroundTransparency = 1
-title.Text = "🧠 VIP Servers TP"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextScaled = true
+title.Text = "AutoJoin 1.0"
+title.TextColor3 = Color3.new(1,1,1)
 title.Font = Enum.Font.GothamBold
-title.Parent = mainFrame
+title.TextSize = 28
 
--- Place ID (Prefilled + Readonly)
-local placeLabel = Instance.new("TextLabel")
-placeLabel.Size = UDim2.new(1, 0, 0, 20)
-placeLabel.Position = UDim2.new(0, 20, 0, 80)
-placeLabel.BackgroundTransparency = 1
-placeLabel.Text = "Place ID:"
-placeLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-placeLabel.TextScaled = true
-placeLabel.Font = Enum.Font.Gotham
-placeLabel.TextXAlignment = Enum.TextXAlignment.Left
-placeLabel.Parent = mainFrame
+-- Job ID Box
+local jobBox = Instance.new("TextBox", frame)
+jobBox.Size = UDim2.new(1,-40,0,80)
+jobBox.Position = UDim2.new(0,20,0,60)
+jobBox.BackgroundColor3 = Color3.fromRGB(35,35,35)
+jobBox.Text = ""
+jobBox.PlaceholderText = 'Cole o Job ID (com ou sem aspas)\nEx: "7b8acb05-f414-46ab-8787-b4a4f1830eb7"'
+jobBox.TextColor3 = Color3.new(1,1,1)
+jobBox.Font = Enum.Font.Gotham
+jobBox.TextSize = 18
+jobBox.ClearTextOnFocus = false
+jobBox.MultiLine = true
+Instance.new("UICorner", jobBox).CornerRadius = UDim.new(0,12)
 
-local placeBox = Instance.new("TextBox")
-placeBox.Size = UDim2.new(1, -40, 0, 35)
-placeBox.Position = UDim2.new(0, 20, 0, 100)
-placeBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-placeBox.BorderSizePixel = 0
-placeBox.Text = TARGET_PLACE_ID
-placeBox.PlaceholderText = ""
-placeBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-placeBox.TextScaled = true
-placeBox.Font = Enum.Font.Gotham
-placeBox.Active = false
-placeBox.FocusLostOnSelection = true
-placeBox.Parent = mainFrame
+-- Status
+local status = Instance.new("TextLabel", frame)
+status.Size = UDim2.new(1,-40,0,40)
+status.Position = UDim2.new(0,20,0,150)
+status.BackgroundTransparency = 1
+status.Text = "Pronto - Intervalo: 500ms"
+status.TextColor3 = Color3.fromRGB(100,255,100)
+status.Font = Enum.Font.GothamBold
+status.TextSize = 20
 
-local placeCorner = Instance.new("UICorner")
-placeCorner.CornerRadius = UDim.new(0, 8)
-placeCorner.Parent = placeBox
+-- Botão TURBO ON/OFF
+local turboBtn = Instance.new("TextButton", frame)
+turboBtn.Size = UDim2.new(1,-40,0,90)
+turboBtn.Position = UDim2.new(0,20,0,210)
+turboBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+turboBtn.Text = "OFF"
+turboBtn.TextColor3 = Color3.new(1,1,1)
+turboBtn.Font = Enum.Font.GothamBold
+turboBtn.TextSize = 50
+Instance.new("UICorner", turboBtn).CornerRadius = UDim.new(0,16)
 
-local placeStroke = Instance.new("UIStroke")
-placeStroke.Color = Color3.fromRGB(70, 70, 70)
-placeStroke.Thickness = 1
-placeStroke.Parent = placeBox
+-- Contador
+local counter = Instance.new("TextLabel", frame)
+counter.Size = UDim2.new(1,-40,0,30)
+counter.Position = UDim2.new(0,20,0,305)
+counter.BackgroundTransparency = 1
+counter.Text = "Tentativas: 0"
+counter.TextColor3 = Color3.fromRGB(200,200,200)
+counter.Font = Enum.Font.Gotham
+counter.TextSize = 16
 
--- Label Jobs
-local jobsLabel = Instance.new("TextLabel")
-jobsLabel.Size = UDim2.new(1, 0, 0, 20)
-jobsLabel.Position = UDim2.new(0, 20, 0, 145)
-jobsLabel.BackgroundTransparency = 1
-jobsLabel.Text = "Paid Job IDs (um por linha):"
-jobsLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
-jobsLabel.TextScaled = true
-jobsLabel.Font = Enum.Font.Gotham
-jobsLabel.TextXAlignment = Enum.TextXAlignment.Left
-jobsLabel.Parent = mainFrame
+-- Variáveis
+local running = false
+local attempts = 0
+local loopThread = nil
 
--- Jobs TextBox Multiline
-local jobsBox = Instance.new("TextBox")
-jobsBox.Name = "JobsBox"
-jobsBox.Size = UDim2.new(1, -40, 0, 160)
-jobsBox.Position = UDim2.new(0, 20, 0, 165)
-... (312 linhas)
+-- FUNÇÃO MELHORADA: aceita com aspas, espaços, quebras de linha, etc.
+local function getCleanJobId()
+    local text = jobBox.Text or ""
+    -- Remove aspas simples e duplas
+    text = text:gsub('"', ''):gsub("'", "")
+    -- Remove espaços, tabs, quebras de linha
+    text = text:gsub("%s+", "")
+    -- Extrai apenas o primeiro UUID válido (caso cole múltiplos)
+    local jobid = text:match("([%w%-]+)")
+    if jobid and #jobid == 36 and jobid:find("-") then
+        return jobid
+    end
+    return nil
+end
+
+local function teleport()
+    local jobid = getCleanJobId()
+    if not jobid then
+        status.Text = "Job ID inválido!"
+        status.TextColor3 = Color3.fromRGB(255,100,100)
+        return
+    end
+
+    attempts += 1
+    counter.Text = "Tentativas: " .. attempts
+    status.Text = "Tentando entrar... (" .. attempts .. ")"
+    status.TextColor3 = Color3.fromRGB(255,255,100)
+
+    -- Método 1: TeleportService (mais rápido)
+    pcall(function()
+        game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobid, player)
+    end)
+
+    -- Método 2: ServerBrowser (backup infalível no Brainrot)
+    task.delay(0.1, function()
+        local sb = game:GetService("ReplicatedStorage"):FindFirstChild("__ServerBrowser")
+        if sb then
+            pcall(function()
+                sb:InvokeServer("teleport", jobid)
+            end)
+        end
+    end)
+end
+
+-- Botão ON/OFF
+turboBtn.MouseButton1Click:Connect(function()
+    running = not running
+
+    if running then
+        local jobid = getCleanJobId()
+        if not jobid then
+            status.Text = "Cole um Job ID válido primeiro!"
+            status.TextColor3 = Color3.fromRGB(255,100,100)
+            running = false
+            return
+        end
+
+        turboBtn.Text = "ON"
+        turboBtn.BackgroundColor3 = Color3.fromRGB(50, 220, 50)
+        status.Text = "AUTOJOIN ATIVADO - 500ms"
+        status.TextColor3 = Color3.fromRGB(100,255,100)
+
+        loopThread = task.spawn(function()
+            while running do
+                teleport()
+                task.wait(0.5) -- 500ms turbo
+            end
+        end)
+    else
+        turboBtn.Text = "OFF"
+        turboBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
+        status.Text = "AutoJoin DESATIVADO"
+        status.TextColor3 = Color3.fromRGB(255,150,150)
+        if loopThread then task.cancel(loopThread) end
+    end
+end)
+
+-- Abre automaticamente + foco na caixa
+frame.Visible = true
+jobBox:CaptureFocus()
