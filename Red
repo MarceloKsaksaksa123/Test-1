@@ -1,0 +1,101 @@
+-- 🧠 Brainrot VIP Teleporter
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local TeleportService = game:GetService("TeleportService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local TARGET_PLACE_ID = "109983668079237"
+
+-- ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "VipTeleporter"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- MainFrame Minimalista
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 380, 0, 420)
+mainFrame.Position = UDim2.new(0.5, -190, 0.5, -210)
+mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = false
+mainFrame.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = mainFrame
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(50, 50, 50)
+stroke.Thickness = 1
+stroke.Parent = mainFrame
+
+-- Título Minimalista
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0, 20)
+title.BackgroundTransparency = 1
+title.Text = "🧠 VIP Servers TP"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.Font = Enum.Font.GothamBold
+title.Parent = mainFrame
+
+-- Place ID (Prefilled + Readonly)
+local placeLabel = Instance.new("TextLabel")
+placeLabel.Size = UDim2.new(1, 0, 0, 20)
+placeLabel.Position = UDim2.new(0, 20, 0, 80)
+placeLabel.BackgroundTransparency = 1
+placeLabel.Text = "Place ID:"
+placeLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+placeLabel.TextScaled = true
+placeLabel.Font = Enum.Font.Gotham
+placeLabel.TextXAlignment = Enum.TextXAlignment.Left
+placeLabel.Parent = mainFrame
+
+local placeBox = Instance.new("TextBox")
+placeBox.Size = UDim2.new(1, -40, 0, 35)
+placeBox.Position = UDim2.new(0, 20, 0, 100)
+placeBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+placeBox.BorderSizePixel = 0
+placeBox.Text = TARGET_PLACE_ID
+placeBox.PlaceholderText = ""
+placeBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+placeBox.TextScaled = true
+placeBox.Font = Enum.Font.Gotham
+placeBox.Active = false
+placeBox.FocusLostOnSelection = true
+placeBox.Parent = mainFrame
+
+local placeCorner = Instance.new("UICorner")
+placeCorner.CornerRadius = UDim.new(0, 8)
+placeCorner.Parent = placeBox
+
+local placeStroke = Instance.new("UIStroke")
+placeStroke.Color = Color3.fromRGB(70, 70, 70)
+placeStroke.Thickness = 1
+placeStroke.Parent = placeBox
+
+-- Label Jobs
+local jobsLabel = Instance.new("TextLabel")
+jobsLabel.Size = UDim2.new(1, 0, 0, 20)
+jobsLabel.Position = UDim2.new(0, 20, 0, 145)
+jobsLabel.BackgroundTransparency = 1
+jobsLabel.Text = "Paid Job IDs (um por linha):"
+jobsLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+jobsLabel.TextScaled = true
+jobsLabel.Font = Enum.Font.Gotham
+jobsLabel.TextXAlignment = Enum.TextXAlignment.Left
+jobsLabel.Parent = mainFrame
+
+-- Jobs TextBox Multiline
+local jobsBox = Instance.new("TextBox")
+jobsBox.Name = "JobsBox"
+jobsBox.Size = UDim2.new(1, -40, 0, 160)
+jobsBox.Position = UDim2.new(0, 20, 0, 165)
+... (312 linhas)
